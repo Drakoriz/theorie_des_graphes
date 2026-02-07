@@ -1700,20 +1700,37 @@ elif st.session_state.section_active == "Algorithmes":
                         st.session_state.en_cours = False
                 
                 elif algo == "Dijkstra":
-                    st.markdown(f"**Départ :** `{etat['depart']}`")
-                    st.markdown(f"**Arrivée :** `{etat['arrivee']}`")
-                    if etat['sommet_courant']:
-                        st.markdown(f"**Sommet courant :** `{etat['sommet_courant']}`")
-                    st.markdown(f"**Visités :** `{list(etat['visites'])}`")  # Ordre chronologique
+                    col_info1, col_info2 = st.columns(2)
+                    with col_info1:
+                        st.markdown(f"**Départ :** `{etat['depart']}`")
+                        st.markdown(f"**Arrivée :** `{etat['arrivee']}`")
+                    with col_info2:
+                        if etat['sommet_courant']:
+                            dist_courante = etat['distances'].get(etat['sommet_courant'], 0)
+                            st.metric("Sommet courant", etat['sommet_courant'], f"{dist_courante:.0f} km")
+                        st.metric("Sommets visités", f"{len(etat['visites'])} / {len(graphe)}")
+                    
+                    # Afficher les distances connues vers quelques sommets clés
+                    if not etat["termine"]:
+                        st.markdown("**Distances actuelles (top 5 plus proches) :**")
+                        distances_valides = {k: v for k, v in etat['distances'].items() if v != float('inf')}
+                        distances_triees = sorted(distances_valides.items(), key=lambda x: x[1])[:5]
+                        
+                        cols_dist = st.columns(min(len(distances_triees), 5))
+                        for idx, (ville, dist) in enumerate(distances_triees):
+                            with cols_dist[idx]:
+                                est_visite = ville in etat['visites']
+                                symbole = "✓" if est_visite else "→"
+                                st.markdown(f"**{symbole} {ville}**  \n{dist:.0f} km")
                     
                     if etat["termine"] and etat["chemin_trouve"]:
-                        st.write("Chemin optimal trouvé !")
+                        st.success("✓ Chemin optimal trouvé !")
                         st.markdown(f"**Chemin :** `{' → '.join(etat['chemin_trouve'])}`")
                         distance_finale = etat['distances'][etat['arrivee']]
                         st.metric("Distance totale", f"{distance_finale:.0f} km")
                         st.session_state.en_cours = False
                     elif etat["termine"]:
-                        st.write("Aucun chemin trouvé !")
+                        st.error("✗ Aucun chemin trouvé !")
                         st.session_state.en_cours = False
             else:
                 st.write("Veuillez lancer le programme.")
@@ -1748,10 +1765,33 @@ elif st.session_state.section_active == "Algorithmes":
                             Arête: `{u} ↔ {v}` ({info_etape['poids']:.0f} km) → Coût total: {info_etape['cout_total']:.0f} km
                             """)
                         elif algo == "Dijkstra":
-                            st.markdown(f"""
-                            **Étape {info_etape['etape']}**  
-                            Sommet: `{info_etape['sommet']}` | Distance: {info_etape['distance']:.0f} km
-                            """)
+                            # Affichage enrichi pour Dijkstra
+                            st.markdown(f"**Étape {info_etape['etape']} - Visite du sommet `{info_etape['sommet']}`**")
+                            
+                            col_a, col_b = st.columns(2)
+                            with col_a:
+                                st.markdown(f"**Distance depuis le départ :** {info_etape['distance']:.0f} km")
+                            with col_b:
+                                st.markdown(f"**Sommets visités :** {len(info_etape.get('visites', []))}")
+                            
+                            # Afficher les distances actuelles vers tous les sommets
+                            if 'distances' in info_etape:
+                                distances_dict = info_etape['distances']
+                                # Trier par distance (mettre ∞ à la fin)
+                                distances_triees = sorted(
+                                    distances_dict.items(),
+                                    key=lambda x: (x[1] == "∞", float(x[1]) if x[1] != "∞" else float('inf'))
+                                )
+                                
+                                # Créer une chaîne formatée
+                                distances_str = " | ".join([
+                                    f"`{ville}`: {dist} km" for ville, dist in distances_triees[:5]
+                                ])
+                                
+                                if len(distances_triees) > 5:
+                                    distances_str += " | ..."
+                                
+                                st.markdown(f"**Distances actuelles :** {distances_str}")
                         st.divider()
     
     # Boucle d'animation

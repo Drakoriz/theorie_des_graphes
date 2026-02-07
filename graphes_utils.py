@@ -39,12 +39,16 @@ def dessiner_graphe(graphe, visites, courant=None, en_file=None):
     else:
         visites_list = visites if isinstance(visites, list) else []
 
+    # Créer un set des visités pour les vérifications O(1)
+    visites_set = set(visites_list)
+
     # Définir les couleurs des nœuds selon leur état
     couleurs_noeuds = []
     for noeud in G.nodes():
         if noeud == courant:
             couleurs_noeuds.append("#B0152A")  # Rouge - nœud courant
-        elif noeud in en_file:
+        elif noeud in en_file and noeud not in visites_set:
+            # Orange seulement si dans la file/pile ET pas encore visité
             couleurs_noeuds.append("#FF9500")  # Orange - en file/pile
         elif noeud in visites_list:
             couleurs_noeuds.append("#13C266")  # Vert - visité
