@@ -14,10 +14,12 @@ div, span, label, button, input, textarea, select {
 [data-testid="stSidebar"] {
     background-color: #f4f4f4 !important;
     border-right: 2px solid rgba(0, 0, 0, 0.1);
+    z-index: 999990 !important;
 }
 
 [data-testid="stHeader"] {
     background-color: rgba(0, 0, 0, 0);
+    z-index: 999999 !important;
 }
 
 .block-container {
@@ -47,6 +49,51 @@ hr {
     border: none;
     border-top: 2px solid #000000 !important;
     opacity: 1 !important;
+}
+
+/* ===== CODE ET PRE (corriger le fond noir) ===== */
+code {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+pre {
+    background-color: #f8f8f8 !important;
+    color: #1a1a1a !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(26, 26, 26, 0.1) !important;
+}
+
+pre code {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+/* Éléments inline code dans markdown */
+.stMarkdown code {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+}
+
+/* Blocs de code */
+.stMarkdown pre {
+    background-color: #f8f8f8 !important;
+    color: #1a1a1a !important;
+}
+
+/* Code dans les expanders */
+.streamlit-expanderContent code {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+}
+
+.streamlit-expanderContent pre {
+    background-color: #f8f8f8 !important;
+    color: #1a1a1a !important;
 }
 
 /* ===== BOUTONS - TOUS AVEC FOND BLANC ===== */
@@ -371,6 +418,7 @@ div[data-baseweb="select"] > div:hover {
 [data-baseweb="popover"] {
     background-color: #ffffff !important;
     border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    z-index: 1000000 !important;
 }
 
 /* Items du menu */
@@ -381,4 +429,221 @@ div[data-baseweb="select"] > div:hover {
 
 [role="option"]:hover {
     background-color: #f0f0f0 !important;
+}
+
+/* Menu hamburger de Streamlit */
+[data-testid="stMainMenu"] {
+    z-index: 1000001 !important;
+}
+
+/* Conteneur du menu principal Streamlit */
+[data-testid="stMainMenu"] > div {
+    background-color: #ffffff !important;
+}
+
+/* Dropdown menu général */
+[data-baseweb="menu"] {
+    z-index: 1000000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Liste des options du menu */
+ul[role="menu"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+}
+
+/* Items individuels du menu */
+ul[role="menu"] li {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    margin: 2px 0 !important;
+}
+
+ul[role="menu"] li:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+}
+
+/* Hover pour tous les contenus des items */
+ul[role="menu"] li:hover * {
+    color: #1a1a1a !important;
+}
+
+/* Texte dans les items du menu */
+ul[role="menu"] li span,
+ul[role="menu"] li div,
+ul[role="menu"] li a {
+    color: #1a1a1a !important;
+}
+
+/* Section "Developer options" - forcer fond blanc */
+ul[role="menu"] li[role="presentation"] {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+ul[role="menu"] li[role="presentation"]:hover {
+    background-color: #f0f0f0 !important;
+}
+
+ul[role="menu"] li[role="presentation"] * {
+    color: #1a1a1a !important;
+    background-color: transparent !important;
+}
+
+ul[role="menu"] li[role="presentation"]:hover * {
+    color: #1a1a1a !important;
+}
+
+/* Forcer le texte "Developer options" en noir */
+ul[role="menu"] li[role="presentation"] div,
+ul[role="menu"] li[role="presentation"] span {
+    color: #1a1a1a !important;
+    background-color: transparent !important;
+}
+
+/* Clear cache et autres options dans la section développeur */
+ul[role="menu"] li button {
+    background-color: transparent !important;
+    color: #1a1a1a !important;
+}
+
+ul[role="menu"] li button span {
+    color: #1a1a1a !important;
+}
+
+ul[role="menu"] li button div {
+    color: #1a1a1a !important;
+}
+
+ul[role="menu"] li button:hover {
+    background-color: #f0f0f0 !important;
+}
+
+ul[role="menu"] li button:hover span {
+    color: #1a1a1a !important;
+}
+
+ul[role="menu"] li button:hover div {
+    color: #1a1a1a !important;
+}
+
+/* Cibler spécifiquement "Clear cache" */
+ul[role="menu"] button[kind="tertiary"] {
+    color: #1a1a1a !important;
+    background-color: transparent !important;
+}
+
+ul[role="menu"] button[kind="tertiary"]:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+}
+
+ul[role="menu"] button[kind="tertiary"] * {
+    color: #1a1a1a !important;
+}
+
+/* Forcer tous les éléments du menu en noir sur blanc */
+[data-testid="stMainMenu"] * {
+    color: #1a1a1a !important;
+}
+
+[data-testid="stMainMenu"] ul {
+    background-color: #ffffff !important;
+}
+
+[data-testid="stMainMenu"] li {
+    background-color: #ffffff !important;
+}
+
+/* Cibler spécifiquement tous les divs dans le menu */
+[data-testid="stMainMenu"] div {
+    background-color: transparent !important;
+}
+
+[data-testid="stMainMenu"] li div {
+    color: #1a1a1a !important;
+}
+
+/* Cibler les items du menu au survol pour éviter le fond noir */
+[data-testid="stMainMenu"] [role="menuitem"]:hover {
+    background-color: #f0f0f0 !important;
+}
+
+[data-testid="stMainMenu"] [role="menuitem"]:hover * {
+    color: #1a1a1a !important;
+    background-color: transparent !important;
+}
+
+/* Modal et dialogs */
+[role="dialog"] {
+    z-index: 1000002 !important;
+    background-color: #ffffff !important;
+}
+
+[role="dialog"] * {
+    color: #1a1a1a !important;
+}
+
+[role="dialog"] button {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+}
+
+[role="dialog"] button:hover {
+    background-color: #f0f0f0 !important;
+}
+
+/* Clear cache dialog spécifique */
+div[data-testid="stCacheDialog"] {
+    background-color: #ffffff !important;
+}
+
+div[data-testid="stCacheDialog"] * {
+    color: #1a1a1a !important;
+}
+
+div[data-testid="stCacheDialog"] h3,
+div[data-testid="stCacheDialog"] p,
+div[data-testid="stCacheDialog"] div,
+div[data-testid="stCacheDialog"] span {
+    color: #1a1a1a !important;
+}
+
+div[data-testid="stCacheDialog"] button {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+}
+
+div[data-testid="stCacheDialog"] button[kind="primary"] {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+div[data-testid="stCacheDialog"] button[kind="primary"]:hover {
+    background-color: #333333 !important;
+}
+
+/* Modals et overlays génériques */
+[data-baseweb="modal"] {
+    background-color: #ffffff !important;
+}
+
+[data-baseweb="modal"] * {
+    color: #1a1a1a !important;
+}
+
+/* Tooltip */
+[role="tooltip"] {
+    z-index: 1000003 !important;
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
 }

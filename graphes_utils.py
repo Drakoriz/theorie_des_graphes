@@ -21,6 +21,7 @@ def charger_graphe(chemin_csv):
 def dessiner_graphe(graphe, visites, courant=None, en_file=None):
     """
     Dessine le graphe avec coloration des nœuds selon leur état.
+    Affiche également le numéro d'ordre de visite au-dessus des nœuds visités.
     """
     G = nx.Graph()
     for u in graphe:
@@ -32,6 +33,12 @@ def dessiner_graphe(graphe, visites, courant=None, en_file=None):
     if en_file is None:
         en_file = set()
 
+    # Convertir visites en liste si c'est un ensemble
+    if isinstance(visites, set):
+        visites_list = list(visites)
+    else:
+        visites_list = visites if isinstance(visites, list) else []
+
     # Définir les couleurs des nœuds selon leur état
     couleurs_noeuds = []
     for noeud in G.nodes():
@@ -39,7 +46,7 @@ def dessiner_graphe(graphe, visites, courant=None, en_file=None):
             couleurs_noeuds.append("#B0152A")  # Rouge - nœud courant
         elif noeud in en_file:
             couleurs_noeuds.append("#FF9500")  # Orange - en file/pile
-        elif noeud in visites:
+        elif noeud in visites_list:
             couleurs_noeuds.append("#13C266")  # Vert - visité
         else:
             couleurs_noeuds.append("white")    # Blanc - non visité
@@ -60,6 +67,30 @@ def dessiner_graphe(graphe, visites, courant=None, en_file=None):
     
     # Dessiner les labels des nœuds
     nx.draw_networkx_labels(G, pos, ax=ax, font_weight="bold", font_size=8)
+
+    # Dessiner les numéros d'ordre de visite au-dessus des nœuds visités
+    if visites_list and len(visites_list) > 0:
+        # Créer un dictionnaire des numéros d'ordre pour les nœuds visités
+        numeros_ordre = {}
+        for i, noeud in enumerate(visites_list, start=1):
+            if noeud in G.nodes():
+                numeros_ordre[noeud] = str(i)
+        
+        # Dessiner les numéros d'ordre au-dessus des nœuds
+        for noeud, numero in numeros_ordre.items():
+            if noeud in pos:
+                x, y = pos[noeud]
+                # Position au-dessus du nœud
+                y_offset = 0.15
+                ax.text(x, y + y_offset, numero, 
+                       ha='center', va='center',
+                       fontsize=10, fontweight='bold',
+                       color='#1a1a1a',
+                       bbox=dict(boxstyle='circle,pad=0.3', 
+                               facecolor='white', 
+                               edgecolor='#1a1a1a',
+                               linewidth=1.5),
+                       zorder=10)
 
     # Dessiner les poids des arêtes
     etiquettes_aretes = nx.get_edge_attributes(G, "weight")
