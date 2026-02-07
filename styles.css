@@ -1,0 +1,384 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* ===== POLICE PLAYFAIR DISPLAY ===== */
+html, body, [class*="css"], .stMarkdown, .stText, p, h1, h2, h3, h4, h5, h6, 
+div, span, label, button, input, textarea, select {
+    font-family: 'Playfair Display', serif !important;
+}
+
+/* ===== FOND BLANC ===== */
+[data-testid="stAppViewContainer"] {
+    background-color: #ffffff !important;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #f4f4f4 !important;
+    border-right: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-testid="stHeader"] {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.block-container {
+    background-color: #ffffff !important;
+}
+
+/* ===== TEXTE ET HEADERS ===== */
+.stApp h1 {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    text-align: center;
+}
+
+.stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6 {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 600 !important;
+}
+
+.stApp p, .stApp div, .stApp span, .stMarkdown, .stText {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #000000 !important;
+    opacity: 1 !important;
+}
+
+/* ===== BOUTONS - TOUS AVEC FOND BLANC ===== */
+.stButton > button {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    border: 2px solid #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 600 !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+}
+
+.stButton > button:focus {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    border: 2px solid #1a1a1a !important;
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1) !important;
+}
+
+/* Bouton primary - aussi fond blanc mais bordure plus épaisse */
+.stButton > button[kind="primary"] {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 3px solid #1a1a1a !important;
+    font-weight: 700 !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+    border: 3px solid #1a1a1a !important;
+}
+
+/* Bouton disabled */
+.stButton > button:disabled {
+    background-color: #f8f8f8 !important;
+    color: #999999 !important;
+    border: 2px solid #cccccc !important;
+    opacity: 0.6;
+}
+
+/* ===== SELECTBOX ET INPUT ===== */
+div[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    border-radius: 8px;
+    color: #1a1a1a !important;
+}
+
+div[data-baseweb="select"] > div:hover {
+    border: 1px solid rgba(26, 26, 26, 0.4) !important;
+}
+
+.stSelectbox label, .stRadio label {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 500 !important;
+}
+
+/* ===== TABS ===== */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.stTabs [data-baseweb="tab-list"] button {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 600 !important;
+    color: #666666 !important;
+    background-color: transparent !important;
+    border-radius: 8px 8px 0 0;
+    border: none !important;
+    transition: all 0.2s ease;
+}
+
+.stTabs [data-baseweb="tab-list"] button:hover {
+    color: #1a1a1a !important;
+    background-color: #f8f8f8 !important;
+}
+
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    background-color: transparent !important;
+    color: #1a1a1a !important;
+    border-bottom: 3px solid #1a1a1a !important;
+    font-weight: 700 !important;
+}
+
+/* Supprimer l'indicateur de sélection rouge par défaut de Streamlit */
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color: white !important;
+}
+
+.stTabs [data-baseweb="tab-border"] {
+    background-color: #e0e0e0 !important;
+}
+
+/* ===== METRICS ===== */
+[data-testid="stMetricValue"] {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+/* ===== EXPANDERS ===== */
+.streamlit-expanderHeader {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    font-family: 'Playfair Display', serif !important;
+    border-radius: 8px;
+    border: 1px solid rgba(26, 26, 26, 0.1);
+}
+
+.streamlit-expanderHeader:hover {
+    background-color: #f8f8f8 !important;
+    border: 1px solid rgba(26, 26, 26, 0.2);
+}
+
+/* ===== DATAFRAME ===== */
+.stDataFrame {
+    border: 1px solid rgba(26, 26, 26, 0.1);
+    border-radius: 8px;
+}
+
+/* ===== SLIDER ===== */
+.stSlider > div > div > div {
+    background-color: #1a1a1a !important;
+}
+
+/* Labels min/max du slider */
+.stSlider [data-testid="stTickBar"] > div {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+}
+
+/* Valeurs affichées du slider */
+.stSlider > div > div > div > div {
+    color: #1a1a1a !important;
+}
+
+/* Container des valeurs du slider */
+.stSlider [data-baseweb="slider"] {
+    background-color: #ffffff !important;
+}
+
+/* ===== RADIO BUTTONS ===== */
+.stRadio > div {
+    color: #1a1a1a !important;
+}
+
+/* ===== SIDEBAR TEXT ===== */
+[data-testid="stSidebar"] * {
+    color: #1a1a1a !important;
+}
+
+/* ===== DOWNLOAD BUTTON ===== */
+.stDownloadButton > button {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    border: 2px solid #1a1a1a !important;
+}
+
+.stDownloadButton > button:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+}
+
+/* ===== NUMBER INPUT ===== */
+.stNumberInput input {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+}
+
+/* ===== TEXT INPUT ===== */
+.stTextInput input {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+}
+
+/* ===== DATA EDITOR ===== */
+.stDataEditor {
+    background-color: #ffffff !important;
+}
+
+/* ===== FILE UPLOADER (DRAG AND DROP) ===== */
+[data-testid="stFileUploader"] {
+    background-color: #ffffff !important;
+}
+
+/* Zone de drop principale */
+[data-testid="stFileUploader"] section {
+    background-color: #fafafa !important;
+    border: 2.5px dashed #1a1a1a !important;
+    border-radius: 12px;
+    padding: 30px 20px !important;
+    transition: all 0.3s ease;
+}
+
+/* État hover de la zone de drop */
+[data-testid="stFileUploader"] section:hover {
+    border-color: #1a1a1a !important;
+    background-color: #f0f0f0 !important;
+    border-style: solid !important;
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.1);
+}
+
+/* Bouton du file uploader */
+[data-testid="stFileUploader"] button {
+    color: #ffffff !important;
+    background-color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+    font-weight: 600 !important;
+    padding: 8px 20px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease;
+}
+
+[data-testid="stFileUploader"] button:hover {
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(26, 26, 26, 0.2);
+}
+
+/* Texte et instructions du file uploader */
+[data-testid="stFileUploader"] small {
+    color: #1a1a1a !important;
+    font-weight: 500 !important;
+}
+
+/* Texte principal du drag and drop */
+[data-testid="stFileUploader"] label {
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+}
+
+/* ===== MATPLOTLIB TOOLBAR (BOUTONS ZOOM, TÉLÉCHARGER, ETC.) ===== */
+/* Toolbar des graphiques */
+.js-plotly-plot .plotly .modebar {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    border-radius: 6px !important;
+    padding: 4px !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    border-radius: 4px !important;
+    color: #1a1a1a !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn:hover {
+    background-color: #f0f0f0 !important;
+    border-color: #1a1a1a !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn path {
+    fill: #1a1a1a !important;
+}
+
+/* ===== DATAFRAME CONTROLS (BOUTONS RECHERCHE, TÉLÉCHARGER, ETC.) ===== */
+/* Barre d'outils du dataframe */
+[data-testid="stElementToolbar"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.1) !important;
+    border-radius: 6px !important;
+    padding: 4px !important;
+}
+
+/* Boutons de la toolbar du dataframe */
+[data-testid="stElementToolbar"] button {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+    border-radius: 4px !important;
+}
+
+[data-testid="stElementToolbar"] button:hover {
+    background-color: #f0f0f0 !important;
+    border-color: #1a1a1a !important;
+}
+
+/* Icônes des boutons */
+[data-testid="stElementToolbar"] svg {
+    color: #1a1a1a !important;
+    fill: #1a1a1a !important;
+}
+
+/* Toolbar spécifique pour les data_editor */
+[data-testid="stDataFrameToolbar"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.1) !important;
+    border-radius: 6px !important;
+}
+
+[data-testid="stDataFrameToolbar"] button {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+}
+
+[data-testid="stDataFrameToolbar"] button:hover {
+    background-color: #f0f0f0 !important;
+    border-color: #1a1a1a !important;
+}
+
+/* Menu déroulant des actions du dataframe */
+[data-baseweb="popover"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(26, 26, 26, 0.2) !important;
+}
+
+/* Items du menu */
+[role="option"] {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+}
+
+[role="option"]:hover {
+    background-color: #f0f0f0 !important;
+}
