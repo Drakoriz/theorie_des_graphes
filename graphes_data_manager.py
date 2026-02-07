@@ -176,15 +176,14 @@ def valider_csv(df: pd.DataFrame) -> Tuple[bool, str]:
         villes_boucles = boucles['ville_a'].unique()
         return False, f"Boucles détectées (ville vers elle-même) : {', '.join(villes_boucles[:3])}{'...' if len(villes_boucles) > 3 else ''}"
     
-    # Vérifier que les distances sont numériques et positives
+    # Vérifier que les distances sont numériques (autoriser les négatifs pour Bellman-Ford)
     try:
         distances = pd.to_numeric(df['distance'].astype(str).str.strip(), errors='coerce')
         if distances.isna().any():
             return False, "Certaines distances ne sont pas des nombres valides"
-        if (distances <= 0).any():
-            return False, "Toutes les distances doivent être strictement positives"
-        if (distances > 10000).any():
-            return False, "Certaines distances sont anormalement élevées (> 10000 km)"
+        # Supprimer la vérification de positivité pour autoriser les poids négatifs
+        if (distances > 10000).any() or (distances < -10000).any():
+            return False, "Les distances doivent être entre -10000 et 10000 km"
     except Exception as e:
         return False, f"Erreur lors de la validation des distances : {str(e)}"
     
