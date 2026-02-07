@@ -31,7 +31,10 @@ from graphes_short import (
     etape_bellman_ford,
     dessiner_graphe_bellman_ford,
     bellman_ford,
-    floyd_warshall
+    floyd_warshall,
+    init_floyd_warshall,
+    etape_floyd_warshall,
+    dessiner_graphe_floyd_warshall
 )
 
 from graphes_pert import (
@@ -710,6 +713,9 @@ elif st.session_state.section_active == "Algorithmes":
             elif algo == "Bellman-Ford" and "aretes" not in st.session_state.etat_algorithme:
                 reinitialiser_animation()
                 st.rerun()
+            elif algo == "Floyd-Warshall" and "sommets" not in st.session_state.etat_algorithme:
+                reinitialiser_animation()
+                st.rerun()
         
         if categorie not in ["Ordonnancement PERT"]:
             # Floyd-Warshall n'a pas de slider de vitesse
@@ -744,39 +750,37 @@ elif st.session_state.section_active == "Algorithmes":
         
         # Boutons de contrôle
         if categorie not in ["Ordonnancement PERT"]:
-            # Pour Floyd-Warshall, on garde un bouton simple d'exécution
-            if algo == "Floyd-Warshall":
-                pass  # Sera géré dans la section spécifique
-            else:
-                col_btn1, col_btn2 = st.columns(2)
-                
-                with col_btn1:
-                    if st.button("Démarrer", use_container_width=True, type="primary", disabled=st.session_state.en_cours):
-                        if algo == "BFS":
-                            st.session_state.etat_algorithme = init_bfs(graphe, noeud_depart)
-                        elif algo == "DFS":
-                            st.session_state.etat_algorithme = init_dfs(graphe, noeud_depart)
-                        elif algo == "Prim":
-                            st.session_state.etat_algorithme = init_prim(graphe, noeud_depart)
-                        elif algo == "Kruskal":
-                            st.session_state.etat_algorithme = init_kruskal(graphe)
-                        elif algo == "Dijkstra":
-                            st.session_state.etat_algorithme = init_dijkstra(graphe, noeud_depart, noeud_arrivee)
-                        elif algo == "Bellman-Ford":
-                            st.session_state.etat_algorithme = init_bellman_ford(graphe, noeud_depart)
-                        st.session_state.en_cours = True
-                        st.session_state.compteur_etapes = 0
-                        st.session_state.historique = []
-                
-                with col_btn2:
-                    if st.button("Reset", use_container_width=True):
-                        reinitialiser_animation()
-                        st.rerun()
-                
-                label_pause = "Pause" if st.session_state.en_cours else "Reprendre"
-                if st.button(label_pause, use_container_width=True, disabled=st.session_state.etat_algorithme is None):
-                    st.session_state.en_cours = not st.session_state.en_cours
+            col_btn1, col_btn2 = st.columns(2)
+            
+            with col_btn1:
+                if st.button("Démarrer", use_container_width=True, type="primary", disabled=st.session_state.en_cours):
+                    if algo == "BFS":
+                        st.session_state.etat_algorithme = init_bfs(graphe, noeud_depart)
+                    elif algo == "DFS":
+                        st.session_state.etat_algorithme = init_dfs(graphe, noeud_depart)
+                    elif algo == "Prim":
+                        st.session_state.etat_algorithme = init_prim(graphe, noeud_depart)
+                    elif algo == "Kruskal":
+                        st.session_state.etat_algorithme = init_kruskal(graphe)
+                    elif algo == "Dijkstra":
+                        st.session_state.etat_algorithme = init_dijkstra(graphe, noeud_depart, noeud_arrivee)
+                    elif algo == "Bellman-Ford":
+                        st.session_state.etat_algorithme = init_bellman_ford(graphe, noeud_depart)
+                    elif algo == "Floyd-Warshall":
+                        st.session_state.etat_algorithme = init_floyd_warshall(graphe)
+                    st.session_state.en_cours = True
+                    st.session_state.compteur_etapes = 0
+                    st.session_state.historique = []
+            
+            with col_btn2:
+                if st.button("Reset", use_container_width=True):
+                    reinitialiser_animation()
                     st.rerun()
+            
+            label_pause = "Pause" if st.session_state.en_cours else "Reprendre"
+            if st.button(label_pause, use_container_width=True, disabled=st.session_state.etat_algorithme is None):
+                st.session_state.en_cours = not st.session_state.en_cours
+                st.rerun()
         
         st.markdown("---")
         
@@ -995,50 +999,177 @@ elif st.session_state.section_active == "Algorithmes":
         else:  # Floyd-Warshall
             st.markdown("""
             L'algorithme de Floyd-Warshall calcule tous les plus courts chemins entre
-            toutes les paires de sommets du graphe.
+            toutes les paires de sommets du graphe en utilisant la programmation dynamique.
+            
+            **Principe :** Pour chaque sommet intermédiaire k, on teste si passer par k
+            améliore la distance entre chaque paire de sommets (i, j).
             """)
             
-            if st.button("Exécuter Floyd-Warshall", type="primary"):
-                with st.spinner("Calcul en cours..."):
-                    distances, predecesseurs, etapes = floyd_warshall(graphe)
+            # Affichage si l'algorithme a démarré
+            if st.session_state.etat_algorithme:
+                st.markdown("---")
                 
-                st.subheader("Matrice des distances")
+                col1, col2 = st.columns([1, 1])
                 
-                # Créer une matrice de distances pour affichage
-                villes = sorted(list(graphe.keys()))
-                matrice_df = pd.DataFrame(
-                    [[f"{distances[i][j]:.0f}" if distances[i][j] != float('inf') else "∞" 
-                      for j in villes] for i in villes],
-                    index=villes,
-                    columns=villes
-                )
-                
-                st.dataframe(matrice_df, use_container_width=True)
-                
-                # Analyse de centralité
-                st.subheader("Analyse de centralité")
-                
-                centralites = {}
-                for ville in villes:
-                    somme_distances = sum(distances[ville][autre] 
-                                        for autre in villes 
-                                        if distances[ville][autre] != float('inf') and ville != autre)
-                    nb_accessibles = sum(1 for autre in villes 
-                                       if distances[ville][autre] != float('inf') and ville != autre)
+                with col1:
+                    st.subheader("Graphe")
+                    fig = dessiner_graphe_floyd_warshall(graphe, st.session_state.etat_algorithme)
+                    st.pyplot(fig)
                     
-                    if nb_accessibles > 0:
-                        centralites[ville] = somme_distances / nb_accessibles
+                    # Légende
+                    legende_parts = [
+                        "<div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>",
+                        "<div style='display: flex; align-items: center; gap: 5px;'>",
+                        "<span style='display: inline-block; width: 14px; height: 14px; background: #007AFF; border: 2px solid black; border-radius: 50%;'></span>",
+                        "<span style='color: #1a1a1a;'>Sommet intermédiaire k</span>",
+                        "</div>",
+                        "</div>"
+                    ]
+                    legende_html = "".join(legende_parts)
+                    st.markdown(legende_html, unsafe_allow_html=True)
+                
+                with col2:
+                    st.subheader("Informations")
+                    
+                    etat = st.session_state.etat_algorithme
+                    
+                    if etat.get("k_courant"):
+                        st.markdown(f"### Étape {st.session_state.compteur_etapes}")
+                        st.markdown(f"**Sommet intermédiaire k :** `{etat['k_courant']}`")
+                        st.markdown(f"**Progression :** {etat['k_index']} / {len(etat['sommets'])} sommets traités")
                     else:
-                        centralites[ville] = float('inf')
+                        st.markdown("### Initialisation")
+                        st.markdown("Distances directes entre sommets")
+                    
+                    if etat.get("termine", False):
+                        st.write("Algorithme terminé !")
+                        st.markdown("**Toutes les distances les plus courtes ont été calculées.**")
+                        st.session_state.en_cours = False
+                    
+                    # Afficher les améliorations de cette étape
+                    if etat.get("ameliorations"):
+                        st.markdown("#### Améliorations à cette étape")
+                        for amelioration in etat["ameliorations"][:5]:  # Limiter à 5 pour lisibilité
+                            anc = amelioration["ancienne"]
+                            nouv = amelioration["nouvelle"]
+                            anc_str = f"{anc:.0f}" if anc != float('inf') else "∞"
+                            st.markdown(f"- **{amelioration['i']} → {amelioration['j']}** : {anc_str} → {nouv:.0f}")
+                        
+                        if len(etat["ameliorations"]) > 5:
+                            st.markdown(f"*... et {len(etat['ameliorations']) - 5} autres améliorations*")
                 
-                # Ville la plus centrale (distance moyenne minimale)
-                ville_centrale = min(centralites.items(), key=lambda x: x[1])
+                # Matrices M et T
+                st.markdown("---")
                 
-                st.write(f"""
-                **Ville la plus centrale :** {ville_centrale[0]}
+                tab_m, tab_t = st.tabs(["Matrice M (Distances)", "Matrice T (Prédécesseurs)"])
                 
-                Distance moyenne vers les autres villes : {ville_centrale[1]:.1f} km
-                """)
+                with tab_m:
+                    st.markdown("#### Matrice M - Distances les plus courtes")
+                    sommets = etat["sommets"]
+                    matrice_m_df = pd.DataFrame(
+                        [[f"{etat['distances'][i][j]:.0f}" if etat['distances'][i][j] != float('inf') else "∞" 
+                          for j in sommets] for i in sommets],
+                        index=sommets,
+                        columns=sommets
+                    )
+                    st.dataframe(matrice_m_df, use_container_width=True)
+                
+                with tab_t:
+                    st.markdown("#### Matrice T - Prédécesseurs")
+                    matrice_t_df = pd.DataFrame(
+                        [[str(etat['predecesseurs'][i][j]) if etat['predecesseurs'][i][j] is not None else "-" 
+                          for j in sommets] for i in sommets],
+                        index=sommets,
+                        columns=sommets
+                    )
+                    st.dataframe(matrice_t_df, use_container_width=True)
+                
+                # Historique
+                if st.session_state.historique:
+                    st.markdown("---")
+                    st.subheader("Historique des étapes")
+                    
+                    with st.expander("Voir l'historique complet", expanded=False):
+                        for etape_info in reversed(st.session_state.historique):
+                            k = etape_info.get("k")
+                            ameliorations = etape_info.get("ameliorations", [])
+                            distances = etape_info.get("distances", {})
+                            predecesseurs = etape_info.get("predecesseurs", {})
+                            
+                            if k:
+                                st.markdown(f"### Étape {etape_info['etape']} - Via sommet {k}")
+                                if ameliorations:
+                                    st.markdown(f"**{len(ameliorations)} améliorations effectuées**")
+                                else:
+                                    st.markdown("**Aucune amélioration**")
+                                
+                                # Afficher les matrices M et T pour cette étape
+                                col_hist1, col_hist2 = st.columns(2)
+                                
+                                with col_hist1:
+                                    st.markdown("**Matrice M (Distances)**")
+                                    sommets_hist = sorted(list(distances.keys()))
+                                    matrice_m_hist = pd.DataFrame(
+                                        [[f"{distances[i][j]:.0f}" if distances[i][j] != float('inf') else "∞" 
+                                          for j in sommets_hist] for i in sommets_hist],
+                                        index=sommets_hist,
+                                        columns=sommets_hist
+                                    )
+                                    st.dataframe(matrice_m_hist, use_container_width=True)
+                                
+                                with col_hist2:
+                                    st.markdown("**Matrice T (Prédécesseurs)**")
+                                    matrice_t_hist = pd.DataFrame(
+                                        [[str(predecesseurs[i][j]) if predecesseurs[i][j] is not None else "-" 
+                                          for j in sommets_hist] for i in sommets_hist],
+                                        index=sommets_hist,
+                                        columns=sommets_hist
+                                    )
+                                    st.dataframe(matrice_t_hist, use_container_width=True)
+                                
+                            st.divider()
+                
+                # Analyse de centralité (si terminé)
+                if etat.get("termine", False):
+                    st.markdown("---")
+                    st.subheader("Analyse de centralité")
+                    
+                    centralites = {}
+                    sommets = etat["sommets"]
+                    for ville in sommets:
+                        somme_distances = sum(etat["distances"][ville][autre] 
+                                            for autre in sommets 
+                                            if etat["distances"][ville][autre] != float('inf') and ville != autre)
+                        nb_accessibles = sum(1 for autre in sommets 
+                                           if etat["distances"][ville][autre] != float('inf') and ville != autre)
+                        
+                        if nb_accessibles > 0:
+                            centralites[ville] = somme_distances / nb_accessibles
+                        else:
+                            centralites[ville] = float('inf')
+                    
+                    # Ville la plus centrale (distance moyenne minimale)
+                    ville_centrale = min(centralites.items(), key=lambda x: x[1])
+                    
+                    st.write(f"""
+                    **Ville la plus centrale :** {ville_centrale[0]}
+                    
+                    Distance moyenne vers les autres villes : {ville_centrale[1]:.1f} km
+                    """)
+            
+            # Exécution automatique pas à pas (APRÈS l'affichage)
+            if st.session_state.en_cours and st.session_state.etat_algorithme:
+                if not st.session_state.etat_algorithme.get("termine", False):
+                    time.sleep(1)
+                    st.session_state.etat_algorithme = etape_floyd_warshall(
+                        graphe,
+                        st.session_state.etat_algorithme,
+                        st.session_state
+                    )
+                    st.session_state.compteur_etapes += 1
+                    st.rerun()
+                else:
+                    st.session_state.en_cours = False
     
     elif categorie == "Ordonnancement PERT":
         st.header("Méthode PERT - Ordonnancement de Projet")

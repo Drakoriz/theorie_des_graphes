@@ -563,3 +563,142 @@ def floyd_warshall(graphe):
         })
     
     return distances, predecesseurs, etapes
+
+
+def init_floyd_warshall(graphe):
+    """
+    Initialise l'état de l'algorithme de Floyd-Warshall.
+    """
+    sommets = sorted(list(graphe.keys()))
+    
+    # Initialisation
+    distances = {u: {v: float('inf') for v in sommets} for u in sommets}
+    predecesseurs = {u: {v: None for v in sommets} for u in sommets}
+    
+    # Distance de chaque sommet à lui-même = 0
+    for u in sommets:
+        distances[u][u] = 0
+    
+    # Distances directes
+    for u in graphe:
+        for v, poids in graphe[u].items():
+            distances[u][v] = poids
+            predecesseurs[u][v] = u
+    
+    return {
+        "sommets": sommets,
+        "distances": distances,
+        "predecesseurs": predecesseurs,
+        "k_index": 0,  # Index du sommet intermédiaire actuel
+        "i": 0,
+        "j": 0,
+        "k_courant": None,
+        "ameliorations": [],  # Liste des améliorations à cette étape
+        "termine": False
+    }
+
+
+def etape_floyd_warshall(graphe, etat, session_state):
+    """
+    Exécute une étape de l'algorithme de Floyd-Warshall.
+    Une étape = traiter toutes les paires (i,j) pour un k donné.
+    """
+    sommets = etat["sommets"]
+    n = len(sommets)
+    
+    if etat["k_index"] >= n:
+        etat["termine"] = True
+        return etat
+    
+    # Traiter toutes les paires pour le k actuel
+    k = sommets[etat["k_index"]]
+    etat["k_courant"] = k
+    etat["ameliorations"] = []
+    
+    for i in sommets:
+        for j in sommets:
+            if etat["distances"][i][k] + etat["distances"][k][j] < etat["distances"][i][j]:
+                ancienne_distance = etat["distances"][i][j]
+                nouvelle_distance = etat["distances"][i][k] + etat["distances"][k][j]
+                
+                etat["distances"][i][j] = nouvelle_distance
+                etat["predecesseurs"][i][j] = etat["predecesseurs"][k][j]
+                
+                etat["ameliorations"].append({
+                    "i": i,
+                    "j": j,
+                    "ancienne": ancienne_distance,
+                    "nouvelle": nouvelle_distance
+                })
+    
+    # Enregistrer l'étape dans l'historique
+    info_etape = {
+        "etape": session_state.compteur_etapes + 1,
+        "k": k,
+        "k_index": etat["k_index"],
+        "ameliorations": list(etat["ameliorations"]),
+        "distances": {u: v.copy() for u, v in etat["distances"].items()},
+        "predecesseurs": {u: v.copy() for u, v in etat["predecesseurs"].items()}
+    }
+    
+    session_state.historique.append(info_etape)
+    
+    # Passer au k suivant
+    etat["k_index"] += 1
+    
+    return etat
+
+
+def dessiner_graphe_floyd_warshall(graphe, etat):
+    """
+    Dessine le graphe pour Floyd-Warshall avec le sommet k en évidence.
+    """
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    
+    G = nx.Graph()
+    for u in graphe:
+        for v, poids in graphe[u].items():
+            G.add_edge(u, v, weight=poids)
+
+    pos = nx.spring_layout(G, weight="weight", seed=42, k=1.2)
+
+    fig, ax = plt.subplots(figsize=(6, 5))
+
+    # Dessiner les arêtes
+    nx.draw_networkx_edges(G, pos, ax=ax, width=1.5, alpha=0.4)
+    
+    # Couleurs des nœuds
+    couleurs_noeuds = []
+    k_courant = etat.get("k_courant")
+    
+    for noeud in G.nodes():
+        if noeud == k_courant:
+            couleurs_noeuds.append("#007AFF")  # Bleu - sommet intermédiaire k actuel
+        else:
+            couleurs_noeuds.append("white")
+    
+    # Dessiner les nœuds
+    nx.draw_networkx_nodes(
+        G, pos, ax=ax,
+        node_color=couleurs_noeuds,
+        node_size=500,
+        edgecolors="black",
+        linewidths=2
+    )
+    
+    # Labels des nœuds
+    nx.draw_networkx_labels(G, pos, ax=ax, font_weight="bold", font_size=8)
+    
+    # Poids des arêtes
+    etiquettes_aretes = nx.get_edge_attributes(G, "weight")
+    nx.draw_networkx_edge_labels(
+        G, pos, ax=ax, 
+        edge_labels=etiquettes_aretes,
+        font_size=6, 
+        label_pos=0.3
+    )
+
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
