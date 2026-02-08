@@ -66,8 +66,6 @@ def calculer_dates_tot(taches):
     Args:
         taches: Liste des tâches PERT
     
-    Returns:
-        dict: Dictionnaire {id_tache: tache} pour accès rapide
     """
     # Créer un dictionnaire pour accès rapide
     taches_dict = {t.id: t for t in taches}
@@ -201,8 +199,6 @@ def calculer_pert(taches):
     Args:
         taches: Liste des tâches PERT
     
-    Returns:
-        tuple: (taches_dict, chemin_critique, duree_projet)
     """
     if not taches:
         return {}, [], 0
@@ -234,12 +230,6 @@ def dessiner_diagramme_pert(taches, chemin_critique):
     - Haut droite : Date au plus tard  
     - Bas : Marge totale
     
-    Args:
-        taches: Liste des tâches PERT
-        chemin_critique: Liste des IDs des tâches critiques
-    
-    Returns:
-        matplotlib.figure.Figure
     """
     if not taches:
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -605,12 +595,6 @@ def generer_tableau_pert(taches):
 def valider_taches(taches):
     """
     Valide qu'un ensemble de tâches est cohérent.
-    
-    Args:
-        taches: Liste des tâches PERT
-    
-    Returns:
-        tuple: (bool, str) - (valide, message d'erreur)
     """
     if not taches:
         return False, "Aucune tâche définie"
