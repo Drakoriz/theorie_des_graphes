@@ -138,29 +138,6 @@ def transformer_graphe_oriente_simple_from_df(df):
     return graphe_oriente
 
 
-def verifier_connexite_orientee(graphe):
-    """
-    Vérifie si un graphe orienté est fortement connexe.
-    
-    Args:
-        graphe: Dictionnaire du graphe orienté
-    
-    Returns:
-        bool: True si fortement connexe, False sinon
-    """
-    import networkx as nx
-    
-    if not graphe:
-        return False
-    
-    G = nx.DiGraph()
-    for u in graphe:
-        G.add_node(u)
-        for v in graphe[u]:
-            G.add_edge(u, v)
-    
-    return nx.is_strongly_connected(G)
-
 
 def ajouter_cycle_negatif(graphe):
     """
