@@ -649,14 +649,18 @@ div[data-testid="stCacheDialog"] button[kind="primary"]:hover {
 }
 
 /* ===== CORRECTIONS POUR LES ICÔNES MATERIAL UI ===== */
-/* Masquer les textes d'icônes non rendues (arrow_right, etc.) */
+/* Masquer les textes d'icônes non rendues (arrow_right, keyboard_double, etc.) */
 /* Ces textes apparaissent quand Material Icons ne charge pas correctement */
 
 /* Import de la police Material Icons si absente */
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Sharp');
 
 /* Appliquer Material Icons à tous les éléments qui en ont besoin */
 .material-icons,
+.material-icons-outlined,
+.material-icons-sharp,
 [class*="material-symbols"] {
     font-family: 'Material Icons' !important;
     font-weight: normal !important;
@@ -675,9 +679,57 @@ div[data-testid="stCacheDialog"] button[kind="primary"]:hover {
     font-feature-settings: 'liga' !important;
 }
 
-/* Masquer spécifiquement les textes qui ne devraient pas apparaître */
-/* Si le texte "arrow_right", "expand_more", etc. apparaît, le cacher */
-button span:not([class]):empty::before,
-button span:not([class]):empty::after {
+/* MASQUER SPÉCIFIQUEMENT LES NOMS D'ICÔNES QUI APPARAISSENT EN TEXTE */
+/* Cacher les éléments qui contiennent des noms d'icônes connus */
+span:not([class]):not([data-testid]):not([role]) {
+    /* Ne cacher que si le contenu correspond à un nom d'icône Material */
+}
+
+/* Masquer les icônes non rendues dans l'interface Streamlit */
+/* Ces règles ciblent les éléments où les noms d'icônes apparaissent en texte brut */
+[data-testid="stHeader"] span:not([class*="st"]):not([data-testid]) {
+    font-size: 0 !important;
+}
+
+/* Masquer spécifiquement dans la zone de navigation */
+[data-testid="stSidebarNav"] span:not([class*="st"]):not([data-testid]) {
+    font-size: 0 !important;
+}
+
+/* Fallback : Si un texte d'icône spécifique apparaît, le masquer */
+/* Liste des noms d'icônes Material UI connus qui posent problème */
+span:not([class]):not([data-testid]):not([role]):not([id]) {
+    /* Vérifier si c'est un nom d'icône en inspectant le parent */
+    &:only-child {
+        font-size: 0 !important;
+    }
+}
+
+/* Alternative plus agressive : masquer TOUS les spans sans classe dans les zones d'interface */
+[data-testid="stHeader"] > div > div > span:not([class]):not([data-testid]) {
+    display: none !important;
+}
+
+button span:not([class]):not([data-testid]):empty::before,
+button span:not([class]):not([data-testid]):empty::after {
     content: '' !important;
+}
+
+/* Cibler spécifiquement les boutons du header qui affichent des icônes */
+header button span {
+    font-family: 'Material Icons' !important;
+    font-feature-settings: 'liga' !important;
+}
+
+/* Si Material Icons ne charge toujours pas, cacher complètement le texte */
+header button span:not([data-testid]) {
+    color: transparent !important;
+    font-size: 0 !important;
+}
+
+/* Forcer les icônes à utiliser la bonne police dans tous les contextes */
+[data-testid="stHeader"] *[class*="material"],
+[data-testid="stSidebarNav"] *[class*="material"] {
+    font-family: 'Material Icons' !important;
+    font-feature-settings: 'liga' !important;
 }
