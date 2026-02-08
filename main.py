@@ -964,7 +964,7 @@ elif st.session_state.section_active == "Algorithmes":
                             st.write("Aucun cycle négatif détecté")
                         st.session_state.en_cours = False
                     
-                    # Tableau Node / Cost / Previous
+                    # Tableau Nœud / Coût / Précédent
                     st.markdown("#### Tableau des distances")
                     
                     tableau_data = []
@@ -973,21 +973,21 @@ elif st.session_state.section_active == "Algorithmes":
                         pred = etat["predecesseurs"][node]
                         
                         tableau_data.append({
-                            "Node": node,
-                            "Cost": dist,  # Garder la valeur numérique pour le tri
-                            "Cost_Display": f"{dist:.0f}" if dist != float('inf') else "∞",
-                            "Previous": pred if pred else "-"
+                            "Nœud": node,
+                            "Coût": dist,  # Garder la valeur numérique pour le tri
+                            "Coût_Affichage": f"{dist:.0f}" if dist != float('inf') else "∞",
+                            "Précédent": pred if pred else "-"
                         })
                     
                     # Trier par coût (les infinis à la fin)
-                    tableau_data.sort(key=lambda x: (x["Cost"] == float('inf'), x["Cost"]))
+                    tableau_data.sort(key=lambda x: (x["Coût"] == float('inf'), x["Coût"]))
                     
                     # Créer le DataFrame avec seulement les colonnes d'affichage
                     df_tableau = pd.DataFrame([
                         {
-                            "Node": item["Node"],
-                            "Cost": item["Cost_Display"],
-                            "Previous": item["Previous"]
+                            "Nœud": item["Nœud"],
+                            "Coût": item["Coût_Affichage"],
+                            "Précédent": item["Précédent"]
                         }
                         for item in tableau_data
                     ])
