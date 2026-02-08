@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import heapq
 class EnsemblesDisjoints:
     """
-    Structure Union-Find (Disjoint Set Union) pour l'algorithme de Kruskal.
     Permet de détecter efficacement les cycles lors de la construction de l'arbre.
     """
     def __init__(self, sommets):
