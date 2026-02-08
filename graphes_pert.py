@@ -37,24 +37,24 @@ class TachePERT:
 
 def creer_projet_construction_maison():
     """
-    Crée un projet : Construction d'une maison individuelle.
+    Crée un projet : 
     
     Projet complet avec 12 tâches représentant toutes les phases
-    de construction d'une maison, des fondations à la livraison.
+    d'une soirée de lancement (exemple de Graphe PERT Objectif BTS Hachette) '
     """
     taches = [
-        TachePERT("A", "Étude de faisabilité et choix du terrain", 7, []),
-        TachePERT("B", "Obtention du permis de construire", 10, ["A"]),
-        TachePERT("C", "Plans architecte et étude structure", 8, ["A"]),
-        TachePERT("D", "Terrassement et fondations", 12, ["B", "C"]),
-        TachePERT("E", "Élévation des murs et charpente", 15, ["D"]),
-        TachePERT("F", "Pose de la toiture et isolation", 10, ["E"]),
-        TachePERT("G", "Installation électricité et plomberie", 14, ["E"]),
-        TachePERT("H", "Menuiseries extérieures (fenêtres, portes)", 6, ["F"]),
-        TachePERT("I", "Revêtements intérieurs (plâtre, peinture)", 12, ["G", "H"]),
-        TachePERT("J", "Pose des sols et carrelage", 8, ["I"]),
-        TachePERT("K", "Installation cuisine et salle de bains", 7, ["J"]),
-        TachePERT("L", "Aménagement extérieur et réception chantier", 5, ["K"])
+        TachePERT("A", "Commande", 20, []),
+        TachePERT("B", "Recrutement", 30, []),
+        TachePERT("C", "Plan de communication", 10, []),
+        TachePERT("D", "Installation", 3, ["A"]),
+        TachePERT("E", "Entretiens", 3, ["B"]),
+        TachePERT("F", "Formation", 3, ["D","E"]),
+        TachePERT("G", "Réservations", 30, ["C"]),
+        TachePERT("H", "Commandes des affiches", 15, ["G"]),
+        TachePERT("I", "Animations", 4, ["F", "H"]),
+        TachePERT("J", "Commande des fleurs", 10, ["D"]),
+        TachePERT("K", "Décoration", 7, ["F","J"]),
+        TachePERT("L", "Cocktail", 1, ["I","K"])
     ]
     return taches
 
@@ -227,7 +227,12 @@ def calculer_pert(taches):
 
 def dessiner_diagramme_pert(taches, chemin_critique):
     """
-    Dessine un diagramme PERT avec NetworkX.
+    Dessine un diagramme PERT VERTICAL clair et lisible avec meilleure scalabilité.
+    
+    Format du nœud :
+    - Haut gauche : Date au plus tôt
+    - Haut droite : Date au plus tard  
+    - Bas : Marge totale
     
     Args:
         taches: Liste des tâches PERT
@@ -243,79 +248,240 @@ def dessiner_diagramme_pert(taches, chemin_critique):
         ax.axis('off')
         return fig
     
+    # Créer le graphe avec nœud de début
     G = nx.DiGraph()
     
-    # Ajouter les nœuds
+    # Ajouter un nœud de début fictif
+    G.add_node("DEBUT", tache=None)
+    
+    # Ajouter les tâches
     for tache in taches:
         G.add_node(tache.id, tache=tache)
+    
+    # Connecter le début aux tâches sans dépendances
+    for tache in taches:
+        if not tache.dependances:
+            G.add_edge("DEBUT", tache.id)
     
     # Ajouter les arêtes (dépendances)
     for tache in taches:
         for dep in tache.dependances:
             G.add_edge(dep, tache.id)
     
-    # Utiliser un layout hiérarchique
-    try:
-        pos = nx.planar_layout(G)
-    except:
-        try:
-            pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
-        except:
-            pos = nx.kamada_kawai_layout(G)
-    
-    fig, ax = plt.subplots(figsize=(14, 10))
-    
-    # Dessiner les arêtes normales
-    aretes_normales = [(u, v) for u, v in G.edges() 
-                       if u not in chemin_critique or v not in chemin_critique]
-    nx.draw_networkx_edges(G, pos, ax=ax, edgelist=aretes_normales, 
-                          width=1.5, alpha=0.4, arrows=True, 
-                          arrowsize=20, arrowstyle='->', edge_color='gray')
-    
-    # Dessiner les arêtes du chemin critique en rouge
-    aretes_critiques = [(u, v) for u, v in G.edges() 
-                       if u in chemin_critique and v in chemin_critique]
-    nx.draw_networkx_edges(G, pos, ax=ax, edgelist=aretes_critiques,
-                          width=3, alpha=1.0, arrows=True,
-                          arrowsize=25, arrowstyle='->', edge_color='#B0152A')
-    
-    # Couleurs des nœuds
-    couleurs_noeuds = []
-    for noeud in G.nodes():
-        if noeud in chemin_critique:
-            couleurs_noeuds.append("#B0152A")  # Rouge pour critique
+    # Calculer les niveaux (maintenant verticaux) - POSITIONNEMENT MANUEL
+    niveaux = {"DEBUT": 0}
+    for tache in taches:
+        if not tache.dependances:
+            niveaux[tache.id] = 1
         else:
-            couleurs_noeuds.append("#13C266")  # Vert pour non-critique
+            niveaux[tache.id] = max(niveaux.get(dep, 0) for dep in tache.dependances) + 1
+    
+    # Organiser les tâches par niveau
+    taches_par_niveau = {}
+    for node_id, niveau in niveaux.items():
+        if niveau not in taches_par_niveau:
+            taches_par_niveau[niveau] = []
+        taches_par_niveau[niveau].append(node_id)
+    
+    # Positionnement manuel pour éviter les chevauchements
+    # ORIENTATION VERTICALE : on inverse X et Y
+    pos = {}
+    espacement_y = 2.5  # Espacement VERTICAL entre niveaux (réduit de moitié)
+    espacement_x = 2.0  # Espacement HORIZONTAL entre tâches (réduit)
+    
+    for niveau, nodes in taches_par_niveau.items():
+        nb_nodes = len(nodes)
+        y = -niveau * espacement_y  # Négatif pour aller vers le bas
+        
+        # Centrer horizontalement les nœuds de ce niveau
+        largeur_totale = (nb_nodes - 1) * espacement_x
+        x_start = -largeur_totale / 2
+        
+        for i, node_id in enumerate(sorted(nodes)):
+            x = x_start + i * espacement_x
+            pos[node_id] = (x, y)
+    
+    # Format VERTICAL : plus haut que large
+    max_niveau = max(niveaux.values()) if niveaux else 1
+    nb_max_par_niveau = max(len(nodes) for nodes in taches_par_niveau.values())
+    
+    # Dimensions adaptées pour format vertical (réduites pour correspondre aux espacements)
+    largeur = max(8, nb_max_par_niveau * 2.0 + 2)
+    hauteur = max(8, max_niveau * 2.5 + 3)
+    
+    fig, ax = plt.subplots(figsize=(largeur, hauteur))
+    
+    # Dessiner d'abord toutes les arêtes
+    for u, v in G.edges():
+        if u == "DEBUT":
+            continue
+            
+        # Déterminer la couleur de l'arête
+        if u in chemin_critique and v in chemin_critique:
+            couleur = '#E63946'  # Rouge vif pour chemin critique
+            largeur_line = 4.0
+            alpha = 1.0
+        else:
+            couleur = '#457B9D'  # Bleu pour non-critique
+            largeur_line = 2.5
+            alpha = 0.6
+        
+        # Dessiner l'arête
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        
+        ax.annotate('', xy=(x2, y2), xytext=(x1, y1),
+                   arrowprops=dict(arrowstyle='->', lw=largeur_line, 
+                                 color=couleur, alpha=alpha,
+                                 shrinkA=30, shrinkB=30))
     
     # Dessiner les nœuds
-    nx.draw_networkx_nodes(G, pos, ax=ax,
-                          node_color=couleurs_noeuds,
-                          node_size=2500,
-                          edgecolors="black",
-                          linewidths=2)
+    for node_id in G.nodes():
+        if node_id == "DEBUT":
+            # Nœud spécial pour le début (cercle bleu)
+            x, y = pos[node_id]
+            cercle = mpatches.Circle((x, y), radius=0.35, 
+                                    color='#1D3557', ec='black', 
+                                    linewidth=3, zorder=10)
+            ax.add_patch(cercle)
+            ax.text(x, y, "DÉBUT", ha='center', va='center',
+                   fontsize=12, fontweight='bold', color='white', zorder=11)
+            continue
+        
+        tache = G.nodes[node_id]['tache']
+        x, y = pos[node_id]
+        
+        # Dimensions du rectangle (augmentées pour meilleure lisibilité)
+        largeur_rect = 0.85
+        hauteur_rect = 0.65
+        
+        # Couleur selon si critique
+        if node_id in chemin_critique:
+            couleur_fond = '#FFE5E5'
+            couleur_bordure = '#E63946'
+            largeur_bordure = 3.5
+        else:
+            couleur_fond = '#E8F4F8'
+            couleur_bordure = '#457B9D'
+            largeur_bordure = 2.5
+        
+        # Dessiner le rectangle principal
+        rect = mpatches.FancyBboxPatch(
+            (x - largeur_rect/2, y - hauteur_rect/2),
+            largeur_rect, hauteur_rect,
+            boxstyle="round,pad=0.02",
+            facecolor=couleur_fond,
+            edgecolor=couleur_bordure,
+            linewidth=largeur_bordure,
+            zorder=10
+        )
+        ax.add_patch(rect)
+        
+        # Dessiner les lignes de séparation (croix légère)
+        # Ligne verticale
+        ax.plot([x, x], [y - hauteur_rect/2, y + hauteur_rect/2], 
+               color=couleur_bordure, linewidth=2, alpha=0.5, zorder=11)
+        # Ligne horizontale
+        ax.plot([x - largeur_rect/2, x + largeur_rect/2], [y, y], 
+               color=couleur_bordure, linewidth=2, alpha=0.5, zorder=11)
+        
+        # Textes dans le rectangle (taille de police augmentée)
+        # Haut gauche : Date au plus tôt (noir)
+        ax.text(x - largeur_rect/4, y + hauteur_rect/4, 
+               str(int(tache.date_fin_tot)),
+               ha='center', va='center', fontsize=15, 
+               fontweight='bold', color='#1D3557', zorder=12)
+        
+        # Haut droite : Date au plus tard (orange)
+        ax.text(x + largeur_rect/4, y + hauteur_rect/4, 
+               str(int(tache.date_fin_tard)),
+               ha='center', va='center', fontsize=15, 
+               fontweight='bold', color='#F77F00', zorder=12)
+        
+        # Bas : Marge totale (cyan)
+        ax.text(x, y - hauteur_rect/4, 
+               str(int(tache.marge_totale)),
+               ha='center', va='center', fontsize=15, 
+               fontweight='bold', color='#06AED5', zorder=12)
+        
+        # ID À GAUCHE du nœud (au lieu d'en haut)
+        id_x_offset = -largeur_rect/2 - 0.35
+        label_text = f"{node_id}"
+        
+        ax.text(x + id_x_offset, y, label_text,
+               ha='right', va='center', fontsize=16, fontweight='bold',
+               color=couleur_bordure, zorder=13)
+        
+        # Durée À DROITE du nœud
+        duree_x_offset = largeur_rect/2 + 0.35
+        ax.text(x + duree_x_offset, y, f"{tache.duree}j",
+               ha='left', va='center', fontsize=13, fontweight='bold',
+               color='#666666', zorder=13)
     
-    # Créer des labels complexes avec les informations PERT
-    labels = {}
-    for noeud in G.nodes():
-        tache = G.nodes[noeud]['tache']
-        # Format: ID
-        #         Nom
-        #         Durée
-        #         Dates
-        labels[noeud] = f"{tache.id}\n{tache.nom[:15]}...\n{tache.duree}j"
-    
-    nx.draw_networkx_labels(G, pos, ax=ax, labels=labels,
-                           font_size=7, font_weight="bold", font_color="white")
-    
+    # Configuration des axes
     ax.axis("off")
-    ax.set_title("Diagramme PERT", fontsize=16, fontweight='bold', pad=20)
+    ax.set_title("Diagramme PERT - Ordonnancement de projet", 
+                fontsize=20, fontweight='bold', pad=30, color='#1D3557')
     
-    # Ajouter une légende
-    legende_elements = [
-        mpatches.Patch(color='#B0152A', label='Tâche critique'),
-        mpatches.Patch(color='#13C266', label='Tâche non-critique')
-    ]
-    ax.legend(handles=legende_elements, loc='upper right', fontsize=10)
+    # Légende en haut à gauche
+    legend_x = 0.02
+    legend_y = 0.98
+    
+    # Titre de la légende
+    ax.text(legend_x, legend_y, "Légende :", transform=ax.transAxes,
+           fontsize=14, fontweight='bold', va='top', color='#1D3557')
+    
+    # Ligne critique
+    ax.plot([legend_x, legend_x + 0.10], [legend_y - 0.04, legend_y - 0.04], 
+           transform=ax.transAxes,
+           color='#E63946', linewidth=4, solid_capstyle='round')
+    ax.text(legend_x + 0.12, legend_y - 0.04, "Chemin critique", 
+           transform=ax.transAxes, fontsize=11, va='center')
+    
+    # Ligne non-critique
+    ax.plot([legend_x, legend_x + 0.10], [legend_y - 0.08, legend_y - 0.08], 
+           transform=ax.transAxes,
+           color='#457B9D', linewidth=2.5, solid_capstyle='round', alpha=0.6)
+    ax.text(legend_x + 0.12, legend_y - 0.08, "Tâche non-critique", 
+           transform=ax.transAxes, fontsize=11, va='center')
+    
+    # Légende du nœud (à droite)
+    legend_node_x = 0.75
+    legend_node_y = 0.98
+    
+    # Petit rectangle exemple
+    rect_width = 0.10
+    rect_height = 0.075
+    rect_legend = mpatches.FancyBboxPatch(
+        (legend_node_x, legend_node_y - rect_height),
+        rect_width, rect_height,
+        boxstyle="round,pad=0.01",
+        facecolor='#E8F4F8',
+        edgecolor='#457B9D',
+        linewidth=2.5,
+        transform=ax.transAxes,
+        zorder=100
+    )
+    ax.add_patch(rect_legend)
+    
+    # Lignes de séparation
+    ax.plot([legend_node_x + rect_width/2, legend_node_x + rect_width/2], 
+           [legend_node_y - rect_height, legend_node_y], 
+           transform=ax.transAxes, color='#457B9D', linewidth=1.5, alpha=0.5, zorder=101)
+    ax.plot([legend_node_x, legend_node_x + rect_width], 
+           [legend_node_y - rect_height/2, legend_node_y - rect_height/2], 
+           transform=ax.transAxes, color='#457B9D', linewidth=1.5, alpha=0.5, zorder=101)
+    
+    # Annotations
+    ax.text(legend_node_x + rect_width + 0.02, legend_node_y - rect_height * 0.25, "Date tôt", 
+           transform=ax.transAxes, fontsize=10, va='center', color='#1D3557')
+    ax.text(legend_node_x + rect_width + 0.02, legend_node_y - rect_height * 0.50, "Date tard", 
+           transform=ax.transAxes, fontsize=10, va='center', color='#F77F00')
+    ax.text(legend_node_x + rect_width + 0.02, legend_node_y - rect_height * 0.75, "Marge", 
+           transform=ax.transAxes, fontsize=10, va='center', color='#06AED5')
+    
+    # Ajuster les limites (marges augmentées pour vertical)
+    ax.margins(0.15)
     
     fig.tight_layout()
     return fig
@@ -431,7 +597,7 @@ def generer_tableau_pert(taches):
             "Fin tard": int(tache.date_fin_tard),
             "Marge totale": int(tache.marge_totale),
             "Marge libre": int(tache.marge_libre),
-            "Critique": "" if tache.est_critique else ""
+            "Critique": "✓" if tache.est_critique else ""
         })
     return tableau
 

@@ -15,7 +15,7 @@ from graphes_parcours import (
     etape_dfs
 )
 
-from graphes_mst import (
+from graphes_acpm import (
     init_prim,
     etape_prim,
     init_kruskal,
@@ -731,7 +731,7 @@ elif st.session_state.section_active == "Algorithmes":
             # Transformation 1 : Graphe orienté
             if graphe_oriente:
                 graphe = transformer_graphe_oriente_simple_from_df(df_graphe_actuel)
-                st.info("Graphe transformé en orienté (ville_a → ville_b)")
+                st.write("Graphe transformé en orienté (ville_a → ville_b)")
             
             # Transformation 2 : Cycle négatif (seulement données par défaut + graphe orienté)
             if cycle_negatif and graphe_oriente and not st.session_state.utiliser_donnees_personnalisees:
@@ -781,6 +781,37 @@ elif st.session_state.section_active == "Algorithmes":
             if st.button(label_pause, use_container_width=True, disabled=st.session_state.etat_algorithme is None):
                 st.session_state.en_cours = not st.session_state.en_cours
                 st.rerun()
+        else:  # Pour Ordonnancement PERT
+            # Bouton pour lancer les calculs PERT dans la sidebar
+            if hasattr(st.session_state, 'taches_pert') and st.session_state.taches_pert:
+                # Valider les tâches
+                valide, message = valider_taches(st.session_state.taches_pert)
+                
+                if valide:
+                    if st.button("Lancer les calculs PERT", type="primary", use_container_width=True):
+                        with st.spinner("Calculs en cours..."):
+                            # Calculer PERT
+                            taches_dict, chemin_critique, duree_projet = calculer_pert(
+                                st.session_state.taches_pert
+                            )
+                            
+                            # Stocker dans session_state
+                            st.session_state.pert_calcule = True
+                            st.session_state.chemin_critique = chemin_critique
+                            st.session_state.duree_projet = duree_projet
+                            
+                            st.rerun()
+                    
+                    # Bouton de reset pour PERT
+                    if hasattr(st.session_state, 'pert_calcule') and st.session_state.pert_calcule:
+                        if st.button("Réinitialiser les calculs", use_container_width=True):
+                            st.session_state.pert_calcule = False
+                            st.rerun()
+                else:
+                    st.error(f"{message}")
+            else:
+                st.write("Définissez d'abord les tâches de votre projet")
+        
         
         st.markdown("---")
         
@@ -1090,7 +1121,7 @@ elif st.session_state.section_active == "Algorithmes":
                     st.subheader("Historique des étapes")
                     
                     with st.expander("Voir l'historique complet", expanded=False):
-                        for etape_info in reversed(st.session_state.historique):
+                        for etape_info in st.session_state.historique:
                             k = etape_info.get("k")
                             ameliorations = etape_info.get("ameliorations", [])
                             distances = etape_info.get("distances", {})
@@ -1199,8 +1230,8 @@ elif st.session_state.section_active == "Algorithmes":
             mode_projet = st.radio(
                 "Comment souhaitez-vous définir votre projet ?",
                 [
-                    "Définir mon propre projet (recommandé pour le rapport)",
-                    "Utiliser l'exemple 'Construction d'une maison' (12 tâches)"
+                    " Projet complet avec 12 tâches représentant toutes les phases d une soirée de lancement (exemple de Graphe PERT Objectif BTS Hachette)",
+                    "Définir mon propre projet"
                 ],
                 key="mode_projet_pert"
             )
@@ -1214,7 +1245,7 @@ elif st.session_state.section_active == "Algorithmes":
                     st.session_state.taches_pert = []
                     st.session_state.projet_selectionne = "Mon projet"
                 else:
-                    # Exemple construction maison
+                    # Exemple construction maison (maintenant par défaut)
                     st.session_state.taches_pert = creer_projet_construction_maison()
                     st.session_state.projet_selectionne = "Construction d'une maison"
                 st.rerun()
@@ -1239,7 +1270,7 @@ elif st.session_state.section_active == "Algorithmes":
                 st.subheader(f"Projet : {st.session_state.projet_selectionne}")
                 
                 if st.session_state.projet_selectionne == "Mon projet":
-                    st.info("""
+                    st.write("""
                      **Conseil pour le rapport :** Créez un projet pertinent lié aux graphes.
                     
                     **Exemples d'idées :**
@@ -1369,7 +1400,7 @@ elif st.session_state.section_active == "Algorithmes":
                                         st.success(f" Tâche {id_seul} supprimée !")
                                         st.rerun()
                 else:
-                    st.info(" Aucune tâche définie. Ajoutez votre première tâche ci-dessus pour commencer.")
+                    st.write(" Aucune tâche définie. Ajoutez votre première tâche ci-dessus pour commencer.")
             
             # ============================================================================
             # TAB 2 : Calculs PERT
@@ -1382,21 +1413,8 @@ elif st.session_state.section_active == "Algorithmes":
                     if not valide:
                         st.error(f" Erreur de validation : {message}")
                     else:
-                        st.success(" Projet valide et prêt pour les calculs PERT")
-                        
-                        if st.button(" Lancer les calculs PERT", type="primary"):
-                            with st.spinner("Calculs en cours..."):
-                                # Calculer PERT
-                                taches_dict, chemin_critique, duree_projet = calculer_pert(
-                                    st.session_state.taches_pert
-                                )
-                                
-                                # Stocker dans session_state
-                                st.session_state.pert_calcule = True
-                                st.session_state.chemin_critique = chemin_critique
-                                st.session_state.duree_projet = duree_projet
-                                
-                                st.rerun()
+                        st.write(" Projet valide et prêt pour les calculs PERT")
+                        st.write(" Utilisez le bouton **'Lancer les calculs PERT'** dans la barre latérale pour exécuter les calculs.")
                         
                         # Afficher les résultats si calculés
                         if hasattr(st.session_state, 'pert_calcule') and st.session_state.pert_calcule:
@@ -1424,7 +1442,7 @@ elif st.session_state.section_active == "Algorithmes":
                             chemin_str = " → ".join([f"{t.id} ({t.nom})" for t in taches_critiques])
                             st.markdown(f"**{chemin_str}**")
                             
-                            st.info("""
+                            st.write("""
                              **Le chemin critique** représente la séquence de tâches qui détermine 
                             la durée minimale du projet. Tout retard sur ces tâches retarde l'ensemble du projet.
                             """)
@@ -1453,7 +1471,7 @@ elif st.session_state.section_active == "Algorithmes":
                             - **Critique** : Tâche sur le chemin critique (marge = 0)
                             """)
                 else:
-                    st.info("Aucune tâche définie. Allez dans l'onglet 'Définition des tâches'.")
+                    st.write("Aucune tâche définie. Allez dans l'onglet 'Définition des tâches'.")
             
             # ============================================================================
             # TAB 3 : Diagramme PERT
@@ -1462,7 +1480,7 @@ elif st.session_state.section_active == "Algorithmes":
                 if hasattr(st.session_state, 'pert_calcule') and st.session_state.pert_calcule:
                     st.subheader(" Diagramme PERT")
                     
-                    st.info("""
+                    st.write("""
                     Le diagramme PERT visualise les dépendances entre tâches. 
                     Les tâches **rouges** sont sur le chemin critique, les **vertes** ont de la marge.
                     """)
@@ -1483,7 +1501,7 @@ elif st.session_state.section_active == "Algorithmes":
                     - **Flèches grises** : Autres dépendances
                     """)
                 else:
-                    st.warning(" Veuillez d'abord lancer les calculs PERT dans l'onglet 'Calculs PERT'.")
+                    st.write(" Veuillez d'abord lancer les calculs PERT dans l'onglet 'Calculs PERT'.")
             
             # ============================================================================
             # TAB 4 : Diagramme de Gantt
@@ -1492,7 +1510,7 @@ elif st.session_state.section_active == "Algorithmes":
                 if hasattr(st.session_state, 'pert_calcule') and st.session_state.pert_calcule:
                     st.subheader(" Diagramme de Gantt")
                     
-                    st.info("""
+                    st.write("""
                     Le diagramme de Gantt montre la planification temporelle du projet.
                     Les barres **rouges** sont critiques, les **vertes** ont de la marge (en gris clair).
                     """)
@@ -1511,34 +1529,12 @@ elif st.session_state.section_active == "Algorithmes":
                     - **Barres vertes** : Tâches non-critiques
                     - **Zones grises** : Marge disponible
                     """)
-                    
-                    # Export/Download
-                    st.markdown("---")
-                    st.markdown("###  Export")
-                    
-                    col_exp1, col_exp2 = st.columns(2)
-                    
-                    with col_exp1:
-                        # Export tableau CSV
-                        tableau = generer_tableau_pert(st.session_state.taches_pert)
-                        df_export = pd.DataFrame(tableau)
-                        csv = df_export.to_csv(index=False).encode('utf-8')
-                        st.download_button(
-                            label=" Télécharger le tableau PERT (CSV)",
-                            data=csv,
-                            file_name=f"pert_{st.session_state.projet_selectionne.replace(' ', '_')}.csv",
-                            mime="text/csv",
-                            use_container_width=True
-                        )
-                    
-                    with col_exp2:
-                        st.info("Les diagrammes peuvent être téléchargés via le bouton de téléchargement sur les graphiques.")
                 
                 else:
-                    st.warning(" Veuillez d'abord lancer les calculs PERT dans l'onglet 'Calculs PERT'.")
+                    st.write(" Veuillez d'abord lancer les calculs PERT dans l'onglet 'Calculs PERT'.")
         
         else:
-            st.info(" Choisissez un projet ci-dessus et cliquez sur 'Charger le projet' pour commencer.")
+            st.write(" Choisissez un projet ci-dessus et cliquez sur 'Charger le projet' pour commencer.")
     
     else:
         # Affichage pour les algorithmes avec animation
@@ -1724,7 +1720,7 @@ elif st.session_state.section_active == "Algorithmes":
                                 st.markdown(f"**{symbole} {ville}**  \n{dist:.0f} km")
                     
                     if etat["termine"] and etat["chemin_trouve"]:
-                        st.success("✓ Chemin optimal trouvé !")
+                        st.write(" Chemin optimal trouvé !")
                         st.markdown(f"**Chemin :** `{' → '.join(etat['chemin_trouve'])}`")
                         distance_finale = etat['distances'][etat['arrivee']]
                         st.metric("Distance totale", f"{distance_finale:.0f} km")

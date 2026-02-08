@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import heapq
-class UnionFind:
+class EnsemblesDisjoints:
     """
     Structure Union-Find (Disjoint Set Union) pour l'algorithme de Kruskal.
     Permet de détecter efficacement les cycles lors de la construction de l'arbre.
@@ -66,7 +66,7 @@ def kruskal(graphe):
     
     # Initialiser Union-Find
     sommets = list(graphe.keys())
-    uf = UnionFind(sommets)
+    uf = EnsemblesDisjoints(sommets)
     
     # Construction de l'arbre
     arbre_couvrant = []
@@ -246,7 +246,7 @@ def init_kruskal(graphe):
         "aretes_triees": aretes,
         "arbre": [],
         "cout_total": 0,
-        "uf": UnionFind(list(graphe.keys())),
+        "uf": EnsemblesDisjoints(list(graphe.keys())),
         "index_arete": 0,
         "arete_courante": None,
         "termine": False
