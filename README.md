@@ -80,18 +80,22 @@ L'application s'ouvrira automatiquement dans votre navigateur par défaut à l'a
 
 ```
 theorie_des_graphes/
-├── main.py                      # Application principale Streamlit
-├── graphes_utils.py             # Fonctions utilitaires
-├── graphes_parcours.py          # BFS et DFS
-├── graphes_acpm.py              # Prim et Kruskal
-├── graphes_short.py             # Dijkstra, Bellman-Ford, Floyd-Warshall
-├── graphes_pert.py              # Méthode PERT
-├── graphes_data_manager.py      # Gestion des données
-├── style_loader.py              # Chargement CSS
-├── styles.css                   # Styles personnalisés
-├── villes.csv                   # Données par défaut
-├── requirements.txt             # Dépendances Python
-└── README.md                    # Ce fichier
+├── main.py                        # Application principale Streamlit
+├── ALGOS/
+│   ├── __init__.py
+│   ├── graphes_utils.py             # Fonctions utilitaires
+│   ├── graphes_parcours.py         # BFS et DFS
+│   ├── graphes_acpm.py            # Prim et Kruskal
+│   ├── graphes_short.py         # Dijkstra, Bellman-Ford, Floyd-Warshall
+│   ├── graphes_pert.py            # Méthode PERT
+│   └── graphes_data_manager.py      # Gestion des données
+├── DATA/
+│   ├── __init__.py
+│   └── villes.csv                # Données par défaut
+├── consignes.pdf
+└── requirements.txt
 ```
+
+
 
 
