@@ -79,7 +79,7 @@ if "df_graphe" not in st.session_state:
 if "graphe_modifie" not in st.session_state:
     st.session_state.graphe_modifie = False
 if "section_active" not in st.session_state:
-    st.session_state.section_active = "Algorithmes"
+    st.session_state.section_active = "Gestion"
 if "utiliser_donnees_personnalisees" not in st.session_state:
     st.session_state.utiliser_donnees_personnalisees = False
 if "graphe_actif" not in st.session_state:
@@ -1582,8 +1582,13 @@ elif st.session_state.section_active == "Algorithmes":
                     else:
                         st.warning("État de l'algorithme incomplet. Veuillez cliquer sur Reset.")
             else:
-                fig = dessiner_graphe(graphe, set(), None, None)
-                st.pyplot(fig)
+                # Afficher le graphe initial au premier chargement
+                try:
+                    fig = dessiner_graphe(graphe, set(), None, None)
+                    st.pyplot(fig)
+                except Exception as e:
+                    # En cas d'erreur, afficher un placeholder
+                    st.info("Veuillez lancer le programme.")
             
             # Légende
             if categorie == "Parcours (BFS/DFS)":

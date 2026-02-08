@@ -647,3 +647,37 @@ div[data-testid="stCacheDialog"] button[kind="primary"]:hover {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
 }
+
+/* ===== CORRECTIONS POUR LES ICÔNES MATERIAL UI ===== */
+/* Masquer les textes d'icônes non rendues (arrow_right, etc.) */
+/* Ces textes apparaissent quand Material Icons ne charge pas correctement */
+
+/* Import de la police Material Icons si absente */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Appliquer Material Icons à tous les éléments qui en ont besoin */
+.material-icons,
+[class*="material-symbols"] {
+    font-family: 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    letter-spacing: normal !important;
+    word-wrap: normal !important;
+    white-space: nowrap !important;
+    text-transform: none !important;
+    display: inline-block !important;
+    direction: ltr !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    font-feature-settings: 'liga' !important;
+}
+
+/* Masquer spécifiquement les textes qui ne devraient pas apparaître */
+/* Si le texte "arrow_right", "expand_more", etc. apparaît, le cacher */
+button span:not([class]):empty::before,
+button span:not([class]):empty::after {
+    content: '' !important;
+}
