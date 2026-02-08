@@ -391,15 +391,12 @@ if st.session_state.section_active == "Gestion":
         with col2:
             st.subheader("Informations")
             
-            try:
-                stats = obtenir_statistiques_graphe(df_edite)
-                st.metric("Villes", stats['nb_villes'])
-                st.metric("Arêtes", stats['nb_aretes'])
-                st.metric("Distance min", f"{stats['distance_min']:.0f} km")
-                st.metric("Distance max", f"{stats['distance_max']:.0f} km")
-                st.metric("Distance moy.", f"{stats['distance_moyenne']:.1f} km")
-            except:
-                st.warning("Statistiques non disponibles")
+            stats = obtenir_statistiques_graphe(df_edite)
+            st.metric("Villes", stats['nb_villes'])
+            st.metric("Arêtes", stats['nb_aretes'])
+            st.metric("Distance min", f"{stats['distance_min']:.0f} km")
+            st.metric("Distance max", f"{stats['distance_max']:.0f} km")
+            st.metric("Distance moy.", f"{stats['distance_moyenne']:.1f} km")
             
             st.markdown("---")
             
@@ -1582,12 +1579,8 @@ elif st.session_state.section_active == "Algorithmes":
                         st.warning("État de l'algorithme incomplet. Veuillez cliquer sur Reset.")
             else:
                 # Afficher le graphe initial au premier chargement
-                try:
-                    fig = dessiner_graphe(graphe, set(), None, None)
-                    st.pyplot(fig)
-                except Exception as e:
-                    # En cas d'erreur, afficher un placeholder
-                    st.info("Veuillez lancer le programme.")
+                fig = dessiner_graphe(graphe, set(), None, None)
+                st.pyplot(fig)
             
             # Légende
             if categorie == "Parcours (BFS/DFS)":
