@@ -30,8 +30,7 @@ from graphes_short import (
     init_bellman_ford,
     etape_bellman_ford,
     dessiner_graphe_bellman_ford,
-    bellman_ford,
-    floyd_warshall,
+
     init_floyd_warshall,
     etape_floyd_warshall,
     dessiner_graphe_floyd_warshall
@@ -56,7 +55,6 @@ from graphes_data_manager import (
     charger_template_defaut,
     dataframe_vers_graphe,
     obtenir_statistiques_graphe,
-    graphe_oriente_vers_dataframe
 )
 from style_loader import load_css
 
@@ -1018,9 +1016,10 @@ elif st.session_state.section_active == "Algorithmes":
                                 else:
                                     st.markdown("- Aucune arête relaxée")
                             elif info_etape.get("type") == "verification_cycle":
-                                st.markdown(f"""
+                                st.markdown("""
                                 **Vérification des cycles négatifs**
                                 """)
+
                                 if info_etape.get("cycle_negatif"):
                                     st.error("Cycle négatif détecté !")
                                 else:
