@@ -1,21 +1,21 @@
 import streamlit as st
 import time
 import pandas as pd
-from graphes_utils import (
+from ALGOS.graphes_utils import (
     charger_graphe,
     dessiner_graphe,
     transformer_graphe_oriente_simple_from_df,
     ajouter_cycle_negatif
 )
 
-from graphes_parcours import (
+from ALGOS.graphes_parcours import (
     init_bfs,
     etape_bfs,
     init_dfs,
     etape_dfs
 )
 
-from graphes_acpm import (
+from ALGOS.graphes_acpm import (
     init_prim,
     etape_prim,
     init_kruskal,
@@ -23,7 +23,7 @@ from graphes_acpm import (
     dessiner_graphe_acm
 )
 
-from graphes_short import (
+from ALGOS.graphes_short import (
     init_dijkstra,
     etape_dijkstra,
     dessiner_graphe_dijkstra,
@@ -36,9 +36,9 @@ from graphes_short import (
     dessiner_graphe_floyd_warshall
 )
 
-from graphes_pert import (
+from ALGOS.graphes_pert import (
     TachePERT,
-    creer_projet_construction_maison,
+    creer_projet_organisation_evenement,
     calculer_pert,
     dessiner_diagramme_pert,
     dessiner_diagramme_gantt,
@@ -46,7 +46,7 @@ from graphes_pert import (
     valider_taches
 )
 
-from graphes_data_manager import (
+from ALGOS.graphes_data_manager import (
     generer_graphe_aleatoire,
     calculer_limites_aretes,
     dataframe_vers_csv_bytes,
@@ -56,7 +56,7 @@ from graphes_data_manager import (
     dataframe_vers_graphe,
     obtenir_statistiques_graphe,
 )
-from style_loader import load_css
+from CSS.style_loader import load_css
 
 
 st.set_page_config(page_title="Théorie des graphes", layout="wide")
@@ -1229,7 +1229,7 @@ elif st.session_state.section_active == "Algorithmes":
             mode_projet = st.radio(
                 "Comment souhaitez-vous définir votre projet ?",
                 [
-                    " Projet complet avec 12 tâches représentant toutes les phases d une soirée de lancement (exemple de Graphe PERT Objectif BTS Hachette)",
+                    " Projet exemple : Organisation d'un événement (soirée de lancement)",
                     "Définir mon propre projet"
                 ],
                 key="mode_projet_pert"
@@ -1244,9 +1244,9 @@ elif st.session_state.section_active == "Algorithmes":
                     st.session_state.taches_pert = []
                     st.session_state.projet_selectionne = "Mon projet"
                 else:
-                    # Exemple construction maison (maintenant par défaut)
-                    st.session_state.taches_pert = creer_projet_construction_maison()
-                    st.session_state.projet_selectionne = "Construction d'une maison"
+                    # Exemple organisation d'événement
+                    st.session_state.taches_pert = creer_projet_organisation_evenement()
+                    st.session_state.projet_selectionne = "Organisation d'un événement"
                 st.rerun()
         
         st.markdown("---")

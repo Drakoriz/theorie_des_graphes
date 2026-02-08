@@ -35,12 +35,12 @@ class TachePERT:
         return f"Tâche({self.id}: {self.nom}, durée={self.duree}j)"
 
 
-def creer_projet_construction_maison():
+def creer_projet_organisation_evenement():
     """
-    Crée un projet : 
+    Crée un projet d'organisation d'événement.
     
     Projet complet avec 12 tâches représentant toutes les phases
-    d'une soirée de lancement (exemple de Graphe PERT Objectif BTS Hachette) '
+    d'une soirée de lancement (exemple de Graphe PERT Objectif BTS Hachette).
     """
     taches = [
         TachePERT("A", "Commande", 20, []),
