@@ -81,7 +81,7 @@ if "df_graphe" not in st.session_state:
 if "graphe_modifie" not in st.session_state:
     st.session_state.graphe_modifie = False
 if "section_active" not in st.session_state:
-    st.session_state.section_active = "Gestion"
+    st.session_state.section_active = "Algorithmes"
 if "utiliser_donnees_personnalisees" not in st.session_state:
     st.session_state.utiliser_donnees_personnalisees = False
 if "graphe_actif" not in st.session_state:
