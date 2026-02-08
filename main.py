@@ -131,6 +131,10 @@ with st.sidebar:
 
     
     st.markdown("---")
+    
+    # Indication pour scroller
+    if st.session_state.section_active == "Algorithmes":
+        st.info("⬇️ Faites défiler vers le bas pour configurer et démarrer les algorithmes")
 
 
 # ============================================================================
