@@ -134,7 +134,7 @@ with st.sidebar:
     
     # Indication pour scroller
     if st.session_state.section_active == "Algorithmes":
-        st.info("Faites défiler vers le bas pour configurer et démarrer les algorithmes")
+        st.info("Le bouton pour  démarrer les algorithmes est situé en bas dans la sidebar !")
 
 
 # ============================================================================
