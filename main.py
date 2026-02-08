@@ -56,14 +56,11 @@ from ALGOS.graphes_data_manager import (
     dataframe_vers_graphe,
     obtenir_statistiques_graphe,
 )
-# CSS désactivé - utilisation des styles par défaut de Streamlit
-# from CSS.style_loader import load_css
 
 
 st.set_page_config(page_title="Théorie des graphes", layout="wide")
 
-# CSS désactivé - utilisation des styles par défaut de Streamlit
-# load_css()
+
 
 # Initialisation des états
 if "etat_algorithme" not in st.session_state:
