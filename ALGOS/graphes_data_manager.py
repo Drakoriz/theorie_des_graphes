@@ -301,25 +301,3 @@ def obtenir_statistiques_graphe(df: pd.DataFrame) -> dict:
     
     return stats
 
-
-def graphe_oriente_vers_dataframe(graphe_oriente: dict) -> pd.DataFrame:
-    """
-    Convertit un graphe orienté en DataFrame CSV.
-    
-    Args:
-        graphe_oriente: Dictionnaire du graphe orienté
-    
-    Returns:
-        pd.DataFrame: DataFrame avec colonnes ville_a, ville_b, distance
-    """
-    aretes = []
-    
-    for u in graphe_oriente:
-        for v, poids in graphe_oriente[u].items():
-            aretes.append({
-                'ville_a': u,
-                'ville_b': v,
-                'distance': poids
-            })
-    
-    return pd.DataFrame(aretes)
