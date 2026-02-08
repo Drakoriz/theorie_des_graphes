@@ -56,12 +56,14 @@ from ALGOS.graphes_data_manager import (
     dataframe_vers_graphe,
     obtenir_statistiques_graphe,
 )
-from CSS.style_loader import load_css
+# CSS désactivé - utilisation des styles par défaut de Streamlit
+# from CSS.style_loader import load_css
 
 
 st.set_page_config(page_title="Théorie des graphes", layout="wide")
 
-load_css()
+# CSS désactivé - utilisation des styles par défaut de Streamlit
+# load_css()
 
 # Initialisation des états
 if "etat_algorithme" not in st.session_state:
@@ -567,7 +569,7 @@ if st.session_state.section_active == "Gestion":
     # ============================================================================
     st.markdown("---")
     st.markdown("""
-    <div style='text-align: center; color: #666; padding: 20px;'>
+    <div style='text-align: center; padding: 20px;'>
         <p><strong>Projet : Algorithmes de graphes</strong></p>
         <p>Un projet réalisé par William WAN & Hsiao-Wen-Paul LO</p>
     </div>
@@ -910,23 +912,23 @@ elif st.session_state.section_active == "Algorithmes":
                     "<div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>",
                     "<div style='display: flex; align-items: center; gap: 5px;'>",
                     "<span style='display: inline-block; width: 14px; height: 14px; background: #007AFF; border: 2px solid black; border-radius: 50%;'></span>",
-                    "<span style='color: #1a1a1a;'>Départ</span>",
+                    "<span>Départ</span>",
                     "</div>",
                     "<div style='display: flex; align-items: center; gap: 5px;'>",
                     "<span style='display: inline-block; width: 14px; height: 14px; background: #13C266; border: 2px solid black; border-radius: 50%;'></span>",
-                    "<span style='color: #1a1a1a;'>Atteignable</span>",
+                    "<span>Atteignable</span>",
                     "</div>",
                     "<div style='display: flex; align-items: center; gap: 5px;'>",
                     "<span style='display: inline-block; width: 30px; height: 3px; background: #13C266;'></span>",
-                    "<span style='color: #1a1a1a;'>Arbre des chemins</span>",
+                    "<span>Arbre des chemins</span>",
                     "</div>",
                     "<div style='display: flex; align-items: center; gap: 5px;'>",
                     "<span style='display: inline-block; width: 30px; height: 3px; background: #B0152A;'></span>",
-                    "<span style='color: #1a1a1a;'>Arête relaxée</span>",
+                    "<span>Arête relaxée</span>",
                     "</div>",
                     "<div style='display: flex; align-items: center; gap: 5px;'>",
                     "<span style='display: inline-block; width: 30px; height: 2px; background: #FF9500; border-top: 1px dashed #FF9500;'></span>",
-                    "<span style='color: #1a1a1a;'>Poids négatif</span>",
+                    "<span>Poids négatif</span>",
                     "</div>"
                 ]
                 
@@ -935,7 +937,7 @@ elif st.session_state.section_active == "Algorithmes":
                     legende_parts.extend([
                         "<div style='display: flex; align-items: center; gap: 5px;'>",
                         "<span style='display: inline-block; width: 30px; height: 3px; background: #9B59B6;'></span>",
-                        "<span style='color: #1a1a1a;'>Cycle négatif</span>",
+                        "<span>Cycle négatif</span>",
                         "</div>"
                     ])
                 
@@ -1051,7 +1053,7 @@ elif st.session_state.section_active == "Algorithmes":
                         "<div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>",
                         "<div style='display: flex; align-items: center; gap: 5px;'>",
                         "<span style='display: inline-block; width: 14px; height: 14px; background: #007AFF; border: 2px solid black; border-radius: 50%;'></span>",
-                        "<span style='color: #1a1a1a;'>Sommet intermédiaire k</span>",
+                        "<span>Sommet intermédiaire k</span>",
                         "</div>",
                         "</div>"
                     ]
@@ -1596,19 +1598,19 @@ elif st.session_state.section_active == "Algorithmes":
                 <div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #B0152A; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Nœud courant</span>
+                        <span>Nœud courant</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #FF9500; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>En file/pile</span>
+                        <span>En file/pile</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #13C266; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Visité</span>
+                        <span>Visité</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: white; border: 2.5px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Non visité</span>
+                        <span>Non visité</span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1617,15 +1619,15 @@ elif st.session_state.section_active == "Algorithmes":
                 <div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #B0152A; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Sommet courant</span>
+                        <span>Sommet courant</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #13C266; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Dans l'arbre</span>
+                        <span>Dans l'arbre</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 30px; height: 3px; background: #13C266;'></span>
-                        <span style='color: #1a1a1a;'>Arête de l'arbre</span>
+                        <span>Arête de l'arbre</span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1634,23 +1636,23 @@ elif st.session_state.section_active == "Algorithmes":
                 <div style='display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;'>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #007AFF; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Départ</span>
+                        <span>Départ</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #FF2D55; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Arrivée</span>
+                        <span>Arrivée</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #B0152A; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Sommet courant</span>
+                        <span>Sommet courant</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 14px; height: 14px; background: #13C266; border: 2px solid black; border-radius: 50%;'></span>
-                        <span style='color: #1a1a1a;'>Visité</span>
+                        <span>Visité</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 5px;'>
                         <span style='display: inline-block; width: 30px; height: 3px; background: #13C266;'></span>
-                        <span style='color: #1a1a1a;'>Chemin optimal</span>
+                        <span>Chemin optimal</span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1841,7 +1843,7 @@ elif st.session_state.section_active == "Algorithmes":
     # Footer
     st.markdown("---")
     st.markdown("""
-    <div style='text-align: center; color: #666; padding: 20px;'>
+    <div style='text-align: center; padding: 20px;'>
         <p><strong>Projet : Algorithmes de graphes</strong></p>
         <p>Un projet réalisé par William WAN & Hsiao-Wen-Paul LO</p>
     </div>
