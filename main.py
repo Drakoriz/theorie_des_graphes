@@ -615,7 +615,7 @@ elif st.session_state.section_active == "Algorithmes":
                     st.rerun()
             st.markdown("---")
         else:
-            graphe = charger_graphe("villes.csv")
+            graphe = charger_graphe("DATA/villes.csv")
             df_graphe_actuel = charger_template_defaut()
             col_info1, col_info2 = st.columns([4, 1])
             with col_info1:
